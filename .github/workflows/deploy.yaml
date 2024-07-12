@@ -1,5 +1,5 @@
 # 指定 Actions 的名稱，會顯示在 Actions 頁面上
-name: Hello Actions
+name: Deploy on EC2
 
 # 指定觸發的事件(trigger event)，這裡是 push 到 main 分支時觸發
 on:
@@ -16,4 +16,20 @@ jobs:
     # 每個 step 可以用 run 來叫用其他 GitHub Actions
     # 或是使用 run 來執行 shell 指令
     steps:
-      - run: echo "This job was tirggered by a ${{ github.event_name }} event"
+        - run: echo "This job was tirggered by a ${{ github.event_name }} event"
+        - run: echo "SSH host ${{ secrets.EC2_HOST }}"
+        - run: echo "SSH username ${{ secrets.EC2_USERNAME }}"
+        - name: checkout-repository
+          uses: actions/checkout@v4
+        - name: Run SSH commands
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.EC2_HOST }}
+            username: ${{ secrets.EC2_USERNAME }}
+            key: ${{ secrets.EC2_KEY }}
+            port: ${{ secrets.EC2_PORT }}
+            script: |
+                echo "Connected to EC2"
+                cd /home/ubuntu/
+                touch test.txt
+
