@@ -42,6 +42,7 @@ jobs:
   third-job:
     # 指定運行環境，可以多個
     runs-on: ubuntu-latest
+    if: ${{ always() }}
     needs: [first-job, second-job]
     # 指定工作流程的步驟(steps)
     # 每個 step 可以用 run 來叫用其他 GitHub Actions
