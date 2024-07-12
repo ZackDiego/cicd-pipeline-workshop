@@ -30,6 +30,8 @@ jobs:
             port: ${{ secrets.EC2_PORT }}
             script: |
                 echo "Connected to EC2"
-                cd /home/ubuntu/
-                touch test.txt
+                cd /home/ubuntu/cicd-pipeline-workshop
+                git pull
+                git checkout phase1
+                pm2 restart src/server.js
 
