@@ -10,7 +10,7 @@ on:
 # 指定工作流程(jobs)
 # 每個 actions 至少要有一個 job
 jobs:
-  first-job:
+  test-code:
     if: github.event.pull_request.merged == true
     # 指定運行環境，可以多個
     runs-on: ubuntu-latest
@@ -19,8 +19,26 @@ jobs:
     # 或是使用 run 來執行 shell 指令
     steps:
         - run: echo "This job was tirggered by a ${{ github.event_name }} event"
-        - run: echo "SSH host ${{ secrets.EC2_HOST }}"
-        - run: echo "SSH username ${{ secrets.EC2_USERNAME }}"
+        - name: checkout-repository
+          uses: actions/checkout@v4
+        
+        - name: Set up Node.js
+          uses: actions/setup-node@v2
+          with:
+            node-version: '18'
+  
+        - name: Install dependencies
+          run: npm install
+  
+        - name: Run tests
+          run: ./node_modules/.bin/mocha --reporter spec
+        
+  deploy:
+    needs: test-code
+    if: github.event.pull_request.merged == true && success()
+    runs-on: ubuntu-latest
+    steps:
+        - run: echo "This job was tirggered by a ${{ github.event_name }} event"
         - name: checkout-repository
           uses: actions/checkout@v4
         - name: Run SSH commands
