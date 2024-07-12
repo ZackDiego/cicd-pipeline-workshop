@@ -5,11 +5,13 @@ name: Deploy on EC2
 on:
   pull_request:
     branches: main
+    types: closed
 
 # 指定工作流程(jobs)
 # 每個 actions 至少要有一個 job
 jobs:
   first-job:
+    if: github.event.pull_request.merged == true
     # 指定運行環境，可以多個
     runs-on: ubuntu-latest
     # 指定工作流程的步驟(steps)
