@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 const DB_PWD = process.env.DB_PWD;
 
 app.get('/', (req, res) => {
-  res.send("Hello, let's try auto deploy. v1.0");
+  res.send("Hello, let's try auto deploy. v1.1");
 });
 
 app.get('/db', (req, res) => {
