@@ -80,12 +80,22 @@ jobs:
           with:
             name: code-coverage-report
             path: ./coverage
-        
-        - name: Send Discord message on failure
-          if: ${{ failure() }}
-          env:
-            DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          run: |
+    
+  notify-discord:
+    runs-on: ubuntu-latest
+    needs: test-code
+    if: failure()
+    steps:
+      - name: Get GitHub Action URL
+        id: vars
+        run: echo "::set-output name=run_url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+    
+      - name: Send Discord message on failure
+        if: ${{ failure() }}
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: |
             curl -X POST -H "Content-Type: application/json" -d '{
-            "content": "GitHub Action: web server mocha test failed when PR. Check details on GitHub."
+            "content": "Workflow ${{ github.workflow }} failed in job ${{ github.job }}.
+            Check the reports [here](${{ steps.vars.outputs.run_url }})."
             }' $DISCORD_WEBHOOK_URL
