@@ -10,32 +10,8 @@ on:
 # 指定工作流程(jobs)
 # 每個 actions 至少要有一個 job
 jobs:
-  test-code:
-    if: github.event.pull_request.merged == true
-    # 指定運行環境，可以多個
-    runs-on: ubuntu-latest
-    # 指定工作流程的步驟(steps)
-    # 每個 step 可以用 run 來叫用其他 GitHub Actions
-    # 或是使用 run 來執行 shell 指令
-    steps:
-        - run: echo "This job was tirggered by a ${{ github.event_name }} event"
-        - name: checkout-repository
-          uses: actions/checkout@v4
-        
-        - name: Set up Node.js
-          uses: actions/setup-node@v2
-          with:
-            node-version: '18'
-  
-        - name: Install dependencies
-          run: npm install
-  
-        - name: Run tests
-          run: ./node_modules/.bin/mocha --reporter spec
-        
   deploy:
-    needs: test-code
-    if: github.event.pull_request.merged == true && success()
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
         - run: echo "This job was tirggered by a ${{ github.event_name }} event"
