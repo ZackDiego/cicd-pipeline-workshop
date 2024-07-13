@@ -23,6 +23,9 @@ jobs:
           with:
             node-version: '18'
     
+        - name: Install dependencies
+          run:  npm install
+
         - name: Cache Node.js and npm
           uses: actions/cache@v4
           with:
@@ -30,9 +33,6 @@ jobs:
             key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
             restore-keys: ${{ runner.os }}-node-
         
-        - name: Install dependencies if cache missed
-          run: test -d node_modules && echo "node_modules exists" || npm install
-  
         - name: Lint check
           run: ./node_modules/.bin/eslint .
 
@@ -51,7 +51,8 @@ jobs:
           with:
             node-version: '18'
   
-        - name: Cache Node.js and npm
+        - name: Cache Node.js and its dependency
+          id: cache-npm
           uses: actions/cache@v4
           with:
             path: ~/.npm
@@ -59,7 +60,8 @@ jobs:
             restore-keys: ${{ runner.os }}-node-
         
         - name: Install dependencies if cache missed
-          run: test -d node_modules && echo "node_modules exists" || npm install
+          if: steps.cache-npm.outputs.cache-hit != 'true'
+          run: npm install
 
         - name: Run Mocha tests with nyc and mochawesome
           run: |
