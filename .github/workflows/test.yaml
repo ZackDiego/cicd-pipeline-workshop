@@ -31,7 +31,7 @@ jobs:
             restore-keys: ${{ runner.os }}-node-
         
         - name: Install dependencies if cache missed
-          run: test -d node_modules && echo "node_modules exists" || npm ci
+          run: test -d node_modules && echo "node_modules exists" || npm install
   
         - name: Lint check
           run: ./node_modules/.bin/eslint .
@@ -59,7 +59,7 @@ jobs:
             restore-keys: ${{ runner.os }}-node-
         
         - name: Install dependencies if cache missed
-          run: test -d node_modules && echo "node_modules exists" || npm ci
+          run: test -d node_modules && echo "node_modules exists" || npm install
 
         - name: Run Mocha tests with nyc and mochawesome
           run: |
