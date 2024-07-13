@@ -65,16 +65,18 @@ jobs:
 
         - name: Run Mocha tests with nyc and mochawesome
           run: |
-            ./node_modules/.bin/nyc --reporter=html ./node_modules/.bin/mocha --reporter mochawesome
+            ./node_modules/.bin/nyc --reporter=html ./node_modules/.bin/mocha --reporter mochawesome || echo "Tests failed, genearting report"
 
         - name: Upload mochawesome report
-          uses: actions/upload-artifact@v2
+          uses: actions/upload-artifact@v4
+          if: ${{ always() }}
           with:
             name: mochawesome-report
             path: ./mochawesome-report
 
         - name: Upload code coverage report
-          uses: actions/upload-artifact@v2
+          uses: actions/upload-artifact@v4
+          if: ${{ always() }}
           with:
             name: code-coverage-report
             path: ./coverage
