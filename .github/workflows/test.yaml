@@ -1,5 +1,5 @@
 # 指定 Actions 的名稱，會顯示在 Actions 頁面上
-name: Test when PR
+name: Lint & Test when PR with Cache
 
 # 指定觸發的事件(trigger event)，這裡是 push 到 main 分支時觸發
 on:
@@ -80,3 +80,12 @@ jobs:
           with:
             name: code-coverage-report
             path: ./coverage
+        
+        - name: Send Discord message on failure
+          if: ${{ failure() }}
+          env:
+            DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          run: |
+            curl -X POST -H "Content-Type: application/json" -d '{
+            "content": "GitHub Action: web server mocha test failed when PR. Check details on GitHub."
+            }' $DISCORD_WEBHOOK_URL
