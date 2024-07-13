@@ -86,16 +86,12 @@ jobs:
     needs: test-code
     if: failure()
     steps:
-      - name: Get GitHub Action URL
-        id: vars
-        run: echo "::set-output name=run_url::https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-    
       - name: Send Discord message on failure
-        if: ${{ failure() }}
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          LINK: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
             curl -X POST -H "Content-Type: application/json" -d '{
             "content": "Workflow ${{ github.workflow }} failed in job ${{ github.job }}.
-            Check the reports [here](${{ steps.vars.outputs.run_url }})."
+            Check the reports [here]($LINK)."
             }' $DISCORD_WEBHOOK_URL
