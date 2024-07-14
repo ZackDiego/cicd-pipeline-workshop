@@ -1,5 +1,5 @@
 # 指定 Actions 的名稱，會顯示在 Actions 頁面上
-name: Lint & Test when PR with Cache
+name: Lint & Test when PR with Cache (optimized)
 
 # 指定觸發的事件(trigger event)，這裡是 push 到 main 分支時觸發
 on:
@@ -22,16 +22,10 @@ jobs:
           uses: actions/setup-node@v4
           with:
             node-version: '18'
+            cache: 'npm'
     
         - name: Install dependencies
-          run:  npm install
-
-        - name: Cache Node.js and npm
-          uses: actions/cache@v4
-          with:
-            path: ~/.npm
-            key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: ${{ runner.os }}-node-
+          run:  npm ci
         
         - name: Lint check
           run: ./node_modules/.bin/eslint .
@@ -50,18 +44,10 @@ jobs:
           uses: actions/setup-node@v4
           with:
             node-version: '18'
-  
-        - name: Cache Node.js and its dependency
-          id: cache-npm
-          uses: actions/cache@v4
-          with:
-            path: ~/.npm
-            key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-            restore-keys: ${{ runner.os }}-node-
+            cache: 'npm'
         
-        - name: Install dependencies if cache missed
-          if: steps.cache-npm.outputs.cache-hit != 'true'
-          run: npm install
+        - name: Install dependencies
+          run: npm ci
 
         - name: Run Mocha tests with nyc and mochawesome
           run: |
