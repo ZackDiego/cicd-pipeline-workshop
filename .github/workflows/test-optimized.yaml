@@ -1,5 +1,5 @@
 # 指定 Actions 的名稱，會顯示在 Actions 頁面上
-name: Lint & Test when PR with Cache
+name: Lint & Test when PR with Cache (optimized)
 
 # 指定觸發的事件(trigger event)，這裡是 push 到 main 分支時觸發
 on:
